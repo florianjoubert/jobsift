@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  macOS launchd agent example for a daily jobsift run.
+  Setup:
+    1. cp deploy/com.jobsift.daily.plist.example ~/Library/LaunchAgents/com.jobsift.daily.plist
+    2. Replace /PATH/TO/uv (run `which uv`) and /PATH/TO/jobsift with absolute paths.
+    3. launchctl load ~/Library/LaunchAgents/com.jobsift.daily.plist
+  launchd needs absolute paths (it does not inherit your shell PATH).
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.jobsift.daily</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/PATH/TO/uv</string>
+        <string>run</string>
+        <string>--project</string>
+        <string>/PATH/TO/jobsift</string>
+        <string>python</string>
+        <string>-m</string>
+        <string>app.cli</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/PATH/TO/jobsift</string>
+
+    <!-- Runs every day at 08:00. Add more <dict> blocks for several times a day. -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>8</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/PATH/TO/jobsift/data/launchd.log</string>
+    <key>StandardErrorPath</key>
+    <string>/PATH/TO/jobsift/data/launchd.log</string>
+</dict>
+</plist>

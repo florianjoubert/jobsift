@@ -109,9 +109,24 @@ uv run uvicorn app.main:app       # http://localhost:8000
 > limiting on `POST /runs` (which triggers OpenAI usage).
 
 ### 8. (Optional) Schedule a daily run
-Point a scheduler at the CLI so it runs every morning:
-- **macOS** - a `launchd` agent running `uv run --project /path/to/jobsift python -m app.cli`
-- **Linux** - a cron entry doing the same
+
+Any scheduler works: just run `uv run python -m app.cli` once a day from the project
+directory. Schedulers need **absolute paths** (find uv with `which uv`).
+
+**Linux (cron)** - `crontab -e`, then add:
+```
+0 8 * * * cd /path/to/jobsift && /path/to/uv run python -m app.cli >> data/cron.log 2>&1
+```
+
+**macOS (launchd)** - copy the provided template, edit the paths, then load it:
+```bash
+cp deploy/com.jobsift.daily.plist.example ~/Library/LaunchAgents/com.jobsift.daily.plist
+# replace the /PATH/TO placeholders in the file, then:
+launchctl load ~/Library/LaunchAgents/com.jobsift.daily.plist
+```
+
+**Windows (Task Scheduler)** - create a Basic Task with a daily trigger; action "Start a
+program": program `uv`, arguments `run python -m app.cli`, "Start in" = the project dir.
 
 ---
 
