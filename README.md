@@ -27,7 +27,6 @@ app/
   db/           # SQLite persistence
   api/          # FastAPI (GET /jobs, POST /runs, GET /health)
   schemas/      # shared Pydantic models
-connectors_private/   # local-only extension point (gitignored)
 ```
 
 Connectors are **pluggable**: adding a source = one file implementing the `JobConnector` interface.
@@ -137,9 +136,7 @@ program": program `uv`, arguments `run python -m app.cli`, "Start in" = the proj
 
 Create `app/connectors/<name>.py` with a class exposing `name` and `fetch(criteria) -> list[Job]`, returning normalized `Job` objects, then register it in `app/connectors/registry.py`.
 
-## Private / unpublished connectors
-
-Drop a `*.py` exposing a `Connector` class into `connectors_private/` - it's auto-discovered and **gitignored** (never published). See [`connectors_private/README.md`](connectors_private/README.md) and [`connectors_private/example_connector.py.example`](connectors_private/example_connector.py.example).
+For a source you'd rather not commit, drop a `*.py` exposing a `Connector` class into a local `connectors_private/` folder: it's auto-discovered at startup and gitignored.
 
 ## Development
 

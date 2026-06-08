@@ -13,10 +13,8 @@ data/
 *.log
 summary_*.html
 
-# Private connectors (bring-your-own, gitignored - voir connectors_private/README.md)
-connectors_private/*
-!connectors_private/README.md
-!connectors_private/example_connector.py.example
+# Local-only connectors (your own private/experimental sources) - never published
+connectors_private/
 
 # Docs internes (specs, plans - hors scope du dépôt public)
 docs/
