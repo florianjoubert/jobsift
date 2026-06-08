@@ -92,6 +92,14 @@ def run(
     # 5. Score via LLM
     scored = score_jobs(lang_ok, profile)
 
+    # 5b. France preference - small configurable bonus so France-based listings
+    #     rank above equally-relevant EU-remote ones (soft nudge, not a filter).
+    france_bonus = config.get("scoring", {}).get("france_bonus", 0)
+    if france_bonus:
+        for j in scored:
+            if j.country.strip().lower() == "france":
+                j.relevance_score = min(100, j.relevance_score + france_bonus)
+
     # 6. Persist - save all scored listings
     for j in scored:
         repo.save(j)

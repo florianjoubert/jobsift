@@ -35,6 +35,7 @@ sources:
 
 scoring:
   min_relevance_score: 55
+  france_bonus: 8   # soft preference: adds N to France-based listings' score (0 = off)
 
 notification:
   smtp_server: smtp.gmail.com

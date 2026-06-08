@@ -1,5 +1,6 @@
 # tests/test_pipeline.py
 from app.connectors.base import SearchCriteria
+from app.db.repository import Repository
 from app.schemas.job import Job, JobSource, ScoredJob
 from app.services import pipeline
 
@@ -108,3 +109,33 @@ def test_pipeline_min_score_filters_notified(monkeypatch, tmp_path):
     assert result["scored"] == 2
     assert result["notified"] == 1   # only j1 (score 80 >= 55)
     assert sent["n"] == 1
+
+
+def de_job(jid):
+    return Job(job_id=jid, source=JobSource.wttj, title="t", company="c",
+               location="Berlin, Germany", country="Germany", url="u",
+               description="A sufficiently long description in English here.")
+
+
+def test_pipeline_france_bonus(monkeypatch, tmp_path):
+    """france_bonus boosts France-based listings above equally-scored EU ones."""
+    connectors = [FakeConnector([fr_job("fr1"), de_job("de1")])]
+
+    def fake_score(jobs, profile):
+        return [ScoredJob(**j.model_dump(), relevance_score=50) for j in jobs]
+
+    monkeypatch.setattr(pipeline, "score_jobs", fake_score)
+    monkeypatch.setattr(pipeline, "send_email", lambda j, c: None)
+
+    config = {
+        "geo": {"allowed_countries": ["France", "Germany"]},
+        "scoring": {"min_relevance_score": 55, "france_bonus": 8},
+        "notification": {},
+    }
+    db = tmp_path / "t.db"
+    result = pipeline.run(connectors=connectors, config=config, profile="p", db_path=db)
+
+    scores = {r["job_id"]: r["relevance_score"] for r in Repository(db).list_jobs()}
+    assert scores["fr1"] == 58   # 50 + 8 (France bonus)
+    assert scores["de1"] == 50   # unchanged (not France)
+    assert result["notified"] == 1   # only the boosted France listing crosses 55
