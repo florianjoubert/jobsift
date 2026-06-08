@@ -6,7 +6,16 @@
     1. cp deploy/com.jobsift.daily.plist.example ~/Library/LaunchAgents/com.jobsift.daily.plist
     2. Replace /PATH/TO/uv (run `which uv`) and /PATH/TO/jobsift with absolute paths.
     3. launchctl load ~/Library/LaunchAgents/com.jobsift.daily.plist
+
   launchd needs absolute paths (it does not inherit your shell PATH).
+
+  macOS privacy (TCC) gotcha: a launchd agent cannot read/write the protected
+  folders (~/Documents, ~/Desktop, ~/Downloads).
+    - If the project lives in one of those, grant uv access: System Settings >
+      Privacy & Security > Full Disk Access (or accept the prompt for uv).
+    - Keep the log paths below OUTSIDE those folders (e.g. ~/Library/Logs),
+      otherwise launchd cannot create the log file and the job fails to start.
+    - Simplest: keep the whole project outside ~/Documents.
 -->
 <plist version="1.0">
 <dict>
@@ -37,8 +46,8 @@
     </dict>
 
     <key>StandardOutPath</key>
-    <string>/PATH/TO/jobsift/data/launchd.log</string>
+    <string>/Users/YOU/Library/Logs/jobsift.log</string>
     <key>StandardErrorPath</key>
-    <string>/PATH/TO/jobsift/data/launchd.log</string>
+    <string>/Users/YOU/Library/Logs/jobsift.log</string>
 </dict>
 </plist>

@@ -124,6 +124,9 @@ cp deploy/com.jobsift.daily.plist.example ~/Library/LaunchAgents/com.jobsift.dai
 # replace the /PATH/TO placeholders in the file, then:
 launchctl load ~/Library/LaunchAgents/com.jobsift.daily.plist
 ```
+> macOS privacy (TCC) note: launchd cannot access `~/Documents`, `~/Desktop` or
+> `~/Downloads`. Keep the project **and** the log paths outside those folders (or grant
+> uv Full Disk Access), otherwise the scheduled run fails to start.
 
 **Windows (Task Scheduler)** - create a Basic Task with a daily trigger; action "Start a
 program": program `uv`, arguments `run python -m app.cli`, "Start in" = the project dir.
