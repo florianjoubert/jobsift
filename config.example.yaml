@@ -1,0 +1,41 @@
+# jobsift - search parameters (non-secrets)
+
+search:
+  keywords:
+    - "Technical Product Manager"
+    - "AI Engineer"
+    - "Product Engineer"
+  lookback_days: 1
+
+# Geographic filter (fixes the US-listings bug)
+geo:
+  allowed_countries:   # normalised names (see app/services/geo_filter.py)
+    - France
+    - Belgium
+    - Luxembourg
+    - Germany
+    - Spain
+    - Italy
+    - Netherlands
+    - Ireland
+    - Portugal
+    - Austria
+    - Poland
+    - Sweden
+    - Denmark
+    - Finland
+  allow_remote_unknown: true   # keep remote listings with unknown country (unless a non-EU marker)
+
+# Connector toggles (a connector without API keys is ignored regardless)
+sources:
+  arbeitnow: true
+  wttj: true
+  france_travail: true
+  adzuna: true
+
+scoring:
+  min_relevance_score: 55
+
+notification:
+  smtp_server: smtp.gmail.com
+  smtp_port: 587

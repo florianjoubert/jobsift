@@ -1,0 +1,61 @@
+# Template for a private jobsift connector
+#
+# Drop a *.py file in this directory to add an unlisted job source.
+# The registry (`app/connectors/registry.py`) discovers and instantiates it
+# automatically at startup - no changes to the main codebase required.
+#
+# This directory is fully gitignored (except README.md and this file).
+# Your connector stays local and will never be published.
+#
+# ── Required interface ────────────────────────────────────────────────────
+#
+#   - The class must be named `Connector`.
+#   - It must expose a `name: str` attribute (unique source identifier).
+#   - It must implement `fetch(self, criteria: SearchCriteria) -> list[Job]`.
+#   - It must use `source=JobSource.private` for all returned listings,
+#     so the source is not revealed in public logs.
+#   - The `fetch` method must NEVER raise: log errors and return `[]` on failure.
+#
+# ── Quick start ───────────────────────────────────────────────────────────
+#
+#  1. Copy this file:
+#
+#       cp connectors_private/example_connector.py.example connectors_private/my_source.py
+#
+#  2. Edit `my_source.py` to implement the fetch logic.
+#
+#  3. Trigger a run:
+#
+#       uv run python -m app.cli
+#
+#     You should see in the logs:
+#       Connecteur privé chargé : my_source
+#       Connecteurs actifs : [..., 'my_source']
+#
+# ─────────────────────────────────────────────────────────────────────────────
+
+import logging
+
+from app.connectors.base import SearchCriteria
+from app.schemas.job import Job, JobSource
+
+logger = logging.getLogger(__name__)
+
+
+class Connector:
+    """Generic private connector - replace this implementation."""
+
+    name = "my_source"
+
+    def fetch(self, criteria: SearchCriteria) -> list[Job]:
+        """Fetch listings from the private source and normalise them into Job objects.
+
+        Args:
+            criteria: search keywords and time window.
+
+        Returns:
+            List of normalised listings. Returns [] on error.
+        """
+        # TODO: implement the fetch logic
+        logger.info(f"{self.name} : stub actif, aucune offre retournée.")
+        return []

@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+
+# Secrets & personal data - NEVER commit
+.env
+config.yaml
+profile.md
+data/
+*.db
+*.log
+summary_*.html
+
+# Private connectors (bring-your-own, gitignored - voir connectors_private/README.md)
+connectors_private/*
+!connectors_private/README.md
+!connectors_private/example_connector.py.example
+
+# Docs internes (specs, plans - hors scope du dépôt public)
+docs/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
